@@ -1,5 +1,5 @@
 package sv
 
-class SvHandler {
-    companion object {}
+public abstract class SvHandler {
+    public companion object {}
 }

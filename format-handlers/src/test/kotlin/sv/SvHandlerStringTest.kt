@@ -5,7 +5,7 @@ import org.junit.Assert.*
 import space.kscience.dataforge.values.ValueType
 import space.kscience.tables.*
 
-internal class SvHandlerTest {
+internal class SvHandlerStringTest {
 
     private val referenceTable = RowTable(
         headers = listOf("a", "b", "c").map { ColumnHeader(it, ValueType.STRING) },
@@ -15,9 +15,11 @@ internal class SvHandlerTest {
         )
     )
 
-    private fun assertEqualsTables(table1: Table<Any>, table2: Table<Any>){
-        if (table1.columns.map{it.name} == table2.columns.map{it.name}) {
+    private fun assertEqualsTables(table1: RowTable<Any>, table2: RowTable<Any>){
+        if (table1.headers == table2.headers) {
             assertEquals(table1.rows, table2.rows)
+        } else {
+            return assert(false)
         }
     }
 
@@ -38,14 +40,14 @@ internal class SvHandlerTest {
 
     @Test
     fun readPsvTableTest() {
-        val tableFromCsv = SvHandler.readCsvTable("a|b|c\na1|b1|c1\na2|b2|c2")
-        assertEqualsTables(tableFromCsv, referenceTable)
+        val tableFromPsv = SvHandler.readPsvTable("a|b|c\na1|b1|c1\na2|b2|c2")
+        assertEqualsTables(tableFromPsv, referenceTable)
     }
 
     @Test
     fun readTsvTableTest() {
-        val tableFromCsv = SvHandler.readCsvTable("a\tb\tc\na1\tb1\tc1\na2\tb2\tc2")
-        assertEqualsTables(tableFromCsv, referenceTable)
+        val tableFromTsv = SvHandler.readTsvTable("a\tb\tc\na1\tb1\tc1\na2\tb2\tc2")
+        assertEqualsTables(tableFromTsv, referenceTable)
     }
 
     @Test

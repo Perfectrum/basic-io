@@ -6,54 +6,60 @@ import space.kscience.tables.RowTable
 import space.kscience.tables.*
 import java.net.URL
 import java.nio.file.Path
+import kotlin.io.path.*
 
 public fun SvHandler.Companion.readTable(
     source: CharSequence,
     valueSeparator: String,
     lineSeparator: String = "\n"
 ) : RowTable<Any> {
-
     val headers = source
         .split(lineSeparator)
         .first()
         .split(valueSeparator)
-        .map { ColumnHeader(it, ValueType.STRING) }
+        .map { ColumnHeader(it.trim(), ValueType.STRING) }
 
-    val rows = source
-        .split(lineSeparator)
-        .drop(1)
-        .map {
-            MapRow(
-                    it.split(valueSeparator)
-                        .mapIndexed{ i, v ->
-                            headers[i].name to v
-                        }.toMap()
-                )
-        }
+    val rows = source.split(lineSeparator).filter { it != "" }.drop(1).map {
+        MapRow(
+            it.split(valueSeparator)
+                .mapIndexed{ i, v -> headers[i].name to v.trim() }.toMap()
+        )
+    }
 
-    return RowTable(
-        headers = headers,
-        rows = rows
-    )
+    return RowTable(headers = headers, rows = rows)
 }
 
 public fun SvHandler.Companion.readTable(
     source: Path,
-    valueSeparator: String,
-    lineSeparator: String = "\n",
-    skipLines: Int = 0
-) : RowTable<Any> { TODO() }
+    valueSeparator: String
+) : RowTable<Any> {
+
+    val headers = source
+        .readLines()
+        .first()
+        .split(valueSeparator)
+        .map { ColumnHeader(it.trim(), ValueType.STRING) }
+
+    val rows = source.readLines().filter { it != "" }.drop(1).map {
+        MapRow(
+            it.split(valueSeparator)
+                .mapIndexed { i, v -> headers[i].name to v.trim() }.toMap()
+        )
+    }
+
+    return RowTable(headers = headers, rows = rows)
+}
 
 public fun SvHandler.Companion.readTable(
     source: URL,
     valueSeparator: String,
-    lineSeparator: String = "\n",
-    skipLines: Int = 0
-) : RowTable<Any> { TODO() }
+) : RowTable<Any> {
+    return this.readTable(source.readText(), valueSeparator = valueSeparator)
+}
 
-public fun SvHandler.Companion.readCsvTable(source: CharSequence) = readTable(source, valueSeparator = ",")
-public fun SvHandler.Companion.readCsvTable(source: Path) = readTable(source, valueSeparator = ",")
-public fun SvHandler.Companion.readCsvTable(source: URL) = readTable(source, valueSeparator = ",")
+public fun SvHandler.Companion.readCsvTable(source: CharSequence) = readTable(source, valueSeparator = ", ")
+public fun SvHandler.Companion.readCsvTable(source: Path) = readTable(source, valueSeparator = ", ")
+public fun SvHandler.Companion.readCsvTable(source: URL) = readTable(source, valueSeparator = ", ")
 
 public fun SvHandler.Companion.readTsvTable(source: CharSequence) = readTable(source, valueSeparator = "\t")
 public fun SvHandler.Companion.readTsvTable(source: Path) = readTable(source, valueSeparator = "\t")
@@ -68,9 +74,9 @@ public fun SvHandler.Companion.renderTableToString(
     valueSeparator: String = " ",
     lineSeparator: String = "\n"
 ) : String {
-    return table.headers.map { it.name }.joinToString (separator = valueSeparator) +
+    return table.headers.map { it.name }.joinToString(separator = valueSeparator) +
             lineSeparator +
-            table.rows.mapIndexed { i, row ->
+            table.rows.map { row ->
                 table.headers.map { row[it] }.joinToString(separator = valueSeparator)
             }.joinToString(separator = lineSeparator)
 }
