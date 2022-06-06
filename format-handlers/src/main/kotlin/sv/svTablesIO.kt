@@ -57,17 +57,17 @@ public fun SvHandler.Companion.readTable(
     return this.readTable(source.readText(), valueSeparator = valueSeparator)
 }
 
-public fun SvHandler.Companion.readCsvTable(source: CharSequence) = readTable(source, valueSeparator = ", ")
-public fun SvHandler.Companion.readCsvTable(source: Path) = readTable(source, valueSeparator = ", ")
-public fun SvHandler.Companion.readCsvTable(source: URL) = readTable(source, valueSeparator = ", ")
+public fun SvHandler.Companion.readCsvTable(source: CharSequence): RowTable<Any> = readTable(source, valueSeparator = ", ")
+public fun SvHandler.Companion.readCsvTable(source: Path): RowTable<Any> = readTable(source, valueSeparator = ", ")
+public fun SvHandler.Companion.readCsvTable(source: URL): RowTable<Any> = readTable(source, valueSeparator = ", ")
 
-public fun SvHandler.Companion.readTsvTable(source: CharSequence) = readTable(source, valueSeparator = "\t")
-public fun SvHandler.Companion.readTsvTable(source: Path) = readTable(source, valueSeparator = "\t")
-public fun SvHandler.Companion.readTsvTable(source: URL) = readTable(source, valueSeparator = "\t")
+public fun SvHandler.Companion.readTsvTable(source: CharSequence): RowTable<Any> = readTable(source, valueSeparator = "\t")
+public fun SvHandler.Companion.readTsvTable(source: Path): RowTable<Any> = readTable(source, valueSeparator = "\t")
+public fun SvHandler.Companion.readTsvTable(source: URL): RowTable<Any> = readTable(source, valueSeparator = "\t")
 
-public fun SvHandler.Companion.readPsvTable(source: CharSequence) = readTable(source, valueSeparator = "|")
-public fun SvHandler.Companion.readPsvTable(source: Path) = readTable(source, valueSeparator = "|")
-public fun SvHandler.Companion.readPsvTable(source: URL) = readTable(source, valueSeparator = "|")
+public fun SvHandler.Companion.readPsvTable(source: CharSequence): RowTable<Any> = readTable(source, valueSeparator = "|")
+public fun SvHandler.Companion.readPsvTable(source: Path): RowTable<Any> = readTable(source, valueSeparator = "|")
+public fun SvHandler.Companion.readPsvTable(source: URL): RowTable<Any> = readTable(source, valueSeparator = "|")
 
 public fun SvHandler.Companion.renderTableToString(
     table: RowTable<Any>,
@@ -81,20 +81,20 @@ public fun SvHandler.Companion.renderTableToString(
             }.joinToString(separator = lineSeparator)
 }
 
-public fun SvHandler.Companion.renderTableToCsvString(table: RowTable<Any>) =
-    renderTableToString(table, valueSeparator = ",")
-public fun SvHandler.Companion.renderTableToTsvString(table: RowTable<Any>) =
+public fun SvHandler.Companion.renderTableToCsvString(table: RowTable<Any>): String =
+    renderTableToString(table, valueSeparator = ", ")
+public fun SvHandler.Companion.renderTableToTsvString(table: RowTable<Any>): String =
     renderTableToString(table, valueSeparator = "\t")
-public fun SvHandler.Companion.renderTableToPsvString(table: RowTable<Any>) =
-    renderTableToString(table, valueSeparator = "|")
+public fun SvHandler.Companion.renderTableToPsvString(table: RowTable<Any>): String =
+    renderTableToString(table, valueSeparator = " | ")
 
 public fun SvHandler.Companion.saveTable(
-    table: Table<Any>,
+    table: RowTable<Any>,
     path: Path,
     valueSeparator: String,
     lineSeparator: String = "\n"
-) : Table<Any> { TODO() }
+) { path.writeText(this.renderTableToString(table, valueSeparator, lineSeparator)) }
 
-public fun SvHandler.Companion.saveTableToCsv(table: Table<Any>, path: Path) = saveTable(table, path, valueSeparator = ",")
-public fun SvHandler.Companion.saveTableToTsv(table: Table<Any>, path: Path) = saveTable(table, path, valueSeparator = "\t")
-public fun SvHandler.Companion.saveTableToPsv(table: Table<Any>, path: Path) = saveTable(table, path, valueSeparator = "|")
+public fun SvHandler.Companion.saveTableToCsv(table: RowTable<Any>, path: Path): Unit = saveTable(table, path, valueSeparator = ", ")
+public fun SvHandler.Companion.saveTableToTsv(table: RowTable<Any>, path: Path): Unit = saveTable(table, path, valueSeparator = "\t")
+public fun SvHandler.Companion.saveTableToPsv(table: RowTable<Any>, path: Path): Unit = saveTable(table, path, valueSeparator = " | ")
