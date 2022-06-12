@@ -60,14 +60,14 @@ internal class SvHandlerStringTest {
     @Test
     fun renderTableToCsvTextTest() {
         val stringFromTable = SvHandler.renderTableToCsvString(referenceTable)
-        val referenceString = "a,b,c\na1,b1,c1\na2,b2,c2"
+        val referenceString = "a, b, c\na1, b1, c1\na2, b2, c2"
         assertEquals(referenceString, stringFromTable)
     }
 
     @Test
     fun renderTableToPsvTextTest() {
         val stringFromTable = SvHandler.renderTableToPsvString(referenceTable)
-        val referenceString = "a|b|c\na1|b1|c1\na2|b2|c2"
+        val referenceString = "a | b | c\na1 | b1 | c1\na2 | b2 | c2"
         assertEquals(referenceString, stringFromTable)
     }
 
