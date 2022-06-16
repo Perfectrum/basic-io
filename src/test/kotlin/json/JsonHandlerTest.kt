@@ -7,6 +7,7 @@ import space.kscience.dataforge.values.ValueType
 import space.kscience.tables.ColumnHeader
 import space.kscience.tables.MapRow
 import space.kscience.tables.RowTable
+import java.net.URL
 import java.nio.file.Paths
 
 internal class JsonHandlerTest {
@@ -63,8 +64,13 @@ internal class JsonHandlerTest {
         assertEqualsTables(curTable, simpleTable)
     }
 
-//    @Test
-//    fun readUrlTest() { TODO() }
+    @Test
+    fun readUrlTest() {
+        val url = URL("https://raw.githubusercontent.com/Perfectrum/basic-io/" +
+                    "master/src/test/resources/tables/simple_table.json")
+        val curTable = JsonHandler.readTable(url)
+        assertEqualsTables(curTable, simpleTable)
+    }
 
     @Test
     fun renderTest() {
